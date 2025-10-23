@@ -1,0 +1,46 @@
+version: '3'
+
+networks:
+  paya:
+
+services:
+  web:
+    build:
+      context: ./docker/nginx
+      dockerfile: nginx.dockerfile
+    ports:
+      - "${DOCKER_APP_PORT-80}:80"
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - paya
+
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: php.dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/var/www/html:delegated
+    networks:
+      - paya
+
+  mysql:
+    image: mariadb:lts
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "${DOCKER_DB_PORT-3306}:3306"
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - paya
