@@ -21,9 +21,12 @@ class CreatePayaTransferRequestAction
     )
     {}
 
-    public function controller(CreatePayaTransferRequest $request): array
+    public function controller(CreatePayaTransferRequest $request)
     {
-        return $this->handle($request->toDto())->toArray();
+        return response()->json([
+            'message' => __('Request is saved successfully and is in pending status'),
+            'request' => $this->handle($request->toDto())->toArray()
+        ]);
     }
 
     public function handle(CreatePayaTransferRequestDto $createPayaTransferRequestDTO): PayaTransferRequestDto

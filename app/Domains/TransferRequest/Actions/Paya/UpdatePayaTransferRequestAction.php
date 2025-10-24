@@ -22,9 +22,12 @@ class UpdatePayaTransferRequestAction
     )
     {}
 
-    public function controller(UpdatePayaTransferRequest $request, int $requestId): array
+    public function controller(UpdatePayaTransferRequest $request, int $requestId)
     {
-        return $this->handle($request->toDto(), $requestId)->toArray();
+        return response()->json([
+            'message' => $request->toDto()->status === PayaTransferRequestStatusEnum::CANCELED ? __('Request is Cancelled!') : __('Request is Confirmed!'),
+            'request' => $this->handle($request->toDto(), $requestId)->toArray()
+        ]);
     }
 
     public function handle(UpdatePayaTransferRequestDto $updatePayaTransferRequestDTO, int $requestId): PayaTransferRequestDto
