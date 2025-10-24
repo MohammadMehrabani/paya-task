@@ -8,6 +8,7 @@ use App\Models\TransferRequest\PayaTransferRequest;
 use App\SharedKernel\DTOs\PayaTransferRequest\PayaTransferRequestDto;
 use App\SharedKernel\Exceptions\NotFoundException;
 use App\SharedKernel\Repositories\EloquentBaseRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EloquentPayaTransferRequestRepository extends EloquentBaseRepository implements PayaTransferRequestRepositoryContract
 {
@@ -41,5 +42,18 @@ class EloquentPayaTransferRequestRepository extends EloquentBaseRepository imple
         }
 
         return PayaTransferRequestDto::fromArray($payaTransferRequestDTO->toArray());
+    }
+
+    public function getPayaTransferRequests(): LengthAwarePaginator
+    {
+        $payaTransferRequests = PayaTransferRequest::query()->orderBy('id')->paginate();
+
+        $dtoCollection = $payaTransferRequests->getCollection()->map(function (PayaTransferRequest $model) {
+            return PayaTransferRequestDto::fromArray($model->toArray());
+        });
+
+        $payaTransferRequests->setCollection($dtoCollection);
+
+        return $payaTransferRequests;
     }
 }
