@@ -28,7 +28,7 @@ class UpdatePayaTransferRequest extends FormRequest
             'status' => [
                 'required',
                 'int',
-                Rule::in(array_column(PayaTransferRequestStatusEnum::cases(), 'value'))
+                Rule::in(array_column(PayaTransferRequestStatusEnum::updatableStatuses(), 'value'))
             ],
             'note' => [
                 'required_if:status,'.PayaTransferRequestStatusEnum::CANCELED->value,

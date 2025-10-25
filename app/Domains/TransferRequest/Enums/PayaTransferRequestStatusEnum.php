@@ -9,4 +9,12 @@ enum PayaTransferRequestStatusEnum: int
     case CONFIRMED = 2;
 
     case CANCELED = 3;
+
+    public static function updatableStatuses(): array
+    {
+        return [
+            self::CANCELED,
+            self::CONFIRMED,
+        ];
+    }
 }
